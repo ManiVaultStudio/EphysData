@@ -39,11 +39,17 @@ set(PLUGIN_SOURCES
     src/EphysData.json
     src/Experiment.h
     src/Experiment.cpp
+    src/Recording.h
+    src/Recording.cpp
+    src/TimeSeries.h
+    src/TimeSeries.cpp
 )
 
 set(PLUGIN_HEADERS
     src/EphysData.h
     src/Experiment.h
+    src/Recording.h
+    src/TimeSeries.h
 )
 
 set(QRESOURCES

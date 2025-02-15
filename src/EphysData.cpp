@@ -42,11 +42,15 @@ void EphysData::setCellIdentifiers(const QStringList& cellIds)
     _cellIds = cellIds;
 }
 
-void EphysData::setData(const std::vector<Experiment>& experiments)
-{
-    _experiments = experiments;
-}
+//void EphysData::setData(const std::vector<Experiment>& experiments)
+//{
+//    _experiments = experiments;
+//}
 
+void EphysData::addExperiment(Experiment&& experiment)
+{
+    _experiments.push_back(std::move(experiment));
+}
 
 void EphysData::fromVariantMap(const QVariantMap& variantMap)
 {
@@ -88,9 +92,14 @@ void EphysExperiments::setCellIdentifiers(const QStringList& cellIds)
     getRawData<EphysData>()->setCellIdentifiers(cellIds);
 }
 
-void EphysExperiments::setData(const std::vector<Experiment>& cellMorphologies)
+//void EphysExperiments::setData(const std::vector<Experiment>& cellMorphologies)
+//{
+//    getRawData<EphysData>()->setData(cellMorphologies);
+//}
+
+void EphysExperiments::addExperiment(Experiment&& experiment)
 {
-    getRawData<EphysData>()->setData(cellMorphologies);
+    getRawData<EphysData>()->addExperiment(std::move(experiment));
 }
 
 QIcon EphysExperiments::getIcon(const QColor& color /*= Qt::black*/) const

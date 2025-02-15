@@ -35,7 +35,8 @@ public:
     std::vector<Experiment>& getData();
 
     void setCellIdentifiers(const QStringList& cellIds);
-    void setData(const std::vector<Experiment>& cellMorphologies);
+    //void setData(const std::vector<Experiment>& cellMorphologies);
+    void addExperiment(Experiment&& experiment);
 
 public: // Serialization
 
@@ -84,7 +85,9 @@ public:
 
     void setCellIdentifiers(const QStringList& cellIds);
 
-    void setData(const std::vector<Experiment>& cellMorphologies);
+    //void setData(const std::vector<Experiment>& cellMorphologies);
+
+    void addExperiment(Experiment&& experiment);
 
     /**
      * Get set icon

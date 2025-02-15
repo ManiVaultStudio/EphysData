@@ -2,23 +2,19 @@
 
 #include "EphysData_export.h"
 
+#include "Recording.h"
+
 #include <vector>
 #include <string>
-
-class EPHYSDATA_EXPORT Recording
-{
-public:
-    std::vector<std::string> comments;
-    std::vector<float> data;
-};
+#include <memory>
 
 class EPHYSDATA_EXPORT Experiment
 {
 public:
     const std::vector<Recording>& getAcquisitions() { return _acquisitions; }
 
-    void addAcquisition(Recording& recording);
-    void addStimulus(Recording& recording);
+    void addAcquisition(Recording&& recording);
+    void addStimulus(Recording&& recording);
 
 private:
     std::vector<Recording> _acquisitions;
