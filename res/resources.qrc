@@ -1,5 +1,5 @@
 <RCC>
-    <qresource prefix="/">
+    <qresource prefix="ephys_data">
         <file>Icon_64.png</file>
     </qresource>
 </RCC>

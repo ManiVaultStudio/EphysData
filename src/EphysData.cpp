@@ -102,11 +102,6 @@ void EphysExperiments::addExperiment(Experiment&& experiment)
     getRawData<EphysData>()->addExperiment(std::move(experiment));
 }
 
-QIcon EphysExperiments::getIcon(const QColor& color /*= Qt::black*/) const
-{
-    return QIcon(":/Icon_64.png");
-}
-
 std::vector<std::uint32_t>& EphysExperiments::getSelectionIndices()
 {
     return _indices;
@@ -203,11 +198,6 @@ QVariantMap EphysExperiments::toVariantMap() const
     variantMap["Data"] = getRawData<EphysData>()->toVariantMap();
 
     return variantMap;
-}
-
-QIcon EphysDataFactory::getIcon(const QColor& color /*= Qt::black*/) const
-{
-    return QIcon(":/Icon_64.png");
 }
 
 plugin::RawData* EphysDataFactory::produce()

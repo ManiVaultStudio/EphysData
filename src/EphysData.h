@@ -89,13 +89,6 @@ public:
 
     void addExperiment(Experiment&& experiment);
 
-    /**
-     * Get set icon
-     * @param color Icon color for flat (font) icons
-     * @return Icon
-     */
-    QIcon getIcon(const QColor& color = Qt::black) const override;
-
 public: // Selection
 
     /**
@@ -161,15 +154,11 @@ class EphysDataFactory : public mv::plugin::RawDataFactory
             FILE  "EphysData.json")
 
 public:
-    EphysDataFactory() {}
+    EphysDataFactory()
+    {
+        setIcon(QIcon(":/ephys_data/Icon_64.png"));
+    }
     ~EphysDataFactory() override {}
-
-    /**
-     * Get plugin icon
-     * @param color Icon color for flat (font) icons
-     * @return Icon
-     */
-    QIcon getIcon(const QColor& color = Qt::black) const override;
 
     mv::plugin::RawData* produce() override;
 };
