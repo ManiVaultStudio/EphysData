@@ -104,12 +104,12 @@ void EphysExperiments::addExperiment(Experiment&& experiment)
 
 std::vector<std::uint32_t>& EphysExperiments::getSelectionIndices()
 {
-    return _indices;
+    return getSelection<EphysExperiments>()->_indices;
 }
 
 void EphysExperiments::setSelectionIndices(const std::vector<std::uint32_t>& indices)
 {
-    _indices = indices;
+    getSelection<EphysExperiments>()->_indices = indices;
 }
 
 bool EphysExperiments::canSelect() const
