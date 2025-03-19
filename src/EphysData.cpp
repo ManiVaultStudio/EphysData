@@ -67,6 +67,7 @@ QVariantMap EphysData::toVariantMap() const
 EphysExperiments::EphysExperiments(QString dataName, const QString& guid /*= ""*/) :
     DatasetImpl(dataName, true, guid)
 {
+    setIcon(mv::util::StyledIcon(QIcon(":/ephys_data/Icon_64.png")));
 }
 
 EphysExperiments::~EphysExperiments()

@@ -154,10 +154,7 @@ class EphysDataFactory : public mv::plugin::RawDataFactory
             FILE  "EphysData.json")
 
 public:
-    EphysDataFactory()
-    {
-        setIcon(QIcon(":/ephys_data/Icon_64.png"));
-    }
+    EphysDataFactory() {}
     ~EphysDataFactory() override {}
 
     mv::plugin::RawData* produce() override;
