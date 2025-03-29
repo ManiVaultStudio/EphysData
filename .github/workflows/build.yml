@@ -1,4 +1,4 @@
-name: CellMorphologyData
+name: EphysData
 
 on:
   push:
