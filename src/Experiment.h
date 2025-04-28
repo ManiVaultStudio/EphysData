@@ -12,6 +12,7 @@ class EPHYSDATA_EXPORT Experiment
 {
 public:
     const std::vector<Recording>& getAcquisitions() { return _acquisitions; }
+    const std::vector<Recording>& getStimuli() { return _stimuli; }
 
     void addAcquisition(Recording&& recording);
     void addStimulus(Recording&& recording);

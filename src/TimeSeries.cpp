@@ -2,6 +2,7 @@
 
 void TimeSeries::downsample()
 {
+    int sampleInterval = 100;
     //// Find vertical range of timeseries
     //auto minmax = std::minmax_element(data.begin(), data.end());
     //float minVal = *minmax.first;
@@ -9,16 +10,16 @@ void TimeSeries::downsample()
     //float range = maxVal - minVal;
     //float rangeThreshold = range * 0.05f;
 
-    int newSize = xSeries.size() / 100;
+    int newSize = xSeries.size() / sampleInterval;
 
     for (int i = 0; i < newSize; i++)
     {
-        xSeries[i] = xSeries[i * 100];
-        ySeries[i] = ySeries[i * 100];
+        xSeries[i] = xSeries[i * sampleInterval];
+        ySeries[i] = ySeries[i * sampleInterval];
     }
-    xSeries[newSize] = xSeries[xSeries.size() - 1];
-    ySeries[newSize] = ySeries[ySeries.size() - 1];
+    xSeries[newSize - 1] = xSeries[xSeries.size() - 1];
+    ySeries[newSize - 1] = ySeries[ySeries.size() - 1];
 
-    xSeries.resize(newSize + 1);
-    ySeries.resize(newSize + 1);
+    xSeries.resize(newSize);
+    ySeries.resize(newSize);
 }
