@@ -4,13 +4,15 @@
 
 #include "TimeSeries.h"
 
+#include <util/Serializable.h>
+
 #include <vector>
 #include <string>
 #include <memory>
 
 #include <QHash>
 
-class EPHYSDATA_EXPORT Recording
+class EPHYSDATA_EXPORT Recording : public mv::util::Serializable
 {
 public:
     TimeSeries& GetData();
@@ -25,6 +27,10 @@ public:
 
 public:
     bool HasAttribute(QString attributeName) const;
+
+public: // Serialization
+    void fromVariantMap(const QVariantMap& variantMap) override;
+    QVariantMap toVariantMap() const override;
 
 private:
     TimeSeries                  _data;

@@ -55,11 +55,32 @@ void EphysData::addExperiment(Experiment&& experiment)
 void EphysData::fromVariantMap(const QVariantMap& variantMap)
 {
     WidgetAction::fromVariantMap(variantMap);
+
+    variantMapMustContain(variantMap, "Experiments");
+
+    QVariantList experimentList = variantMap["Experiments"].toList();
+
+    _experiments.resize(experimentList.size());
+    for (int i = 0; i < _experiments.size(); i++)
+    {
+        _experiments[i].fromVariantMap(experimentList[i].toMap());
+    }
 }
 
 QVariantMap EphysData::toVariantMap() const
 {
     auto variantMap = WidgetAction::toVariantMap();
+
+    QVariantList experimentList;
+
+    for (int i = 0; i < _experiments.size(); i++)
+    {
+        const Experiment& experiment = _experiments[i];
+
+        experimentList.append(experiment.toVariantMap());
+    }
+
+    variantMap["Experiments"] = experimentList;
 
     return variantMap;
 }
@@ -187,7 +208,7 @@ void EphysExperiments::fromVariantMap(const QVariantMap& variantMap)
 {
     DatasetImpl::fromVariantMap(variantMap);
 
-    getRawData<EphysData>()->fromVariantMap(variantMap);
+    getRawData<EphysData>()->fromVariantMap(variantMap["Data"].toMap());
 
     events().notifyDatasetDataChanged(this);
 }

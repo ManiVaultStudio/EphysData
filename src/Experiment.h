@@ -4,11 +4,13 @@
 
 #include "Recording.h"
 
+#include <util/Serializable.h>
+
 #include <vector>
 #include <string>
 #include <memory>
 
-class EPHYSDATA_EXPORT Experiment
+class EPHYSDATA_EXPORT Experiment : public mv::util::Serializable
 {
 public:
     const std::vector<Recording>& getAcquisitions() { return _acquisitions; }
@@ -16,6 +18,10 @@ public:
 
     void addAcquisition(Recording&& recording);
     void addStimulus(Recording&& recording);
+
+public: // Serialization
+    void fromVariantMap(const QVariantMap& variantMap) override;
+    QVariantMap toVariantMap() const override;
 
 private:
     std::vector<Recording> _acquisitions;
