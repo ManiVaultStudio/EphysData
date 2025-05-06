@@ -42,16 +42,19 @@ void Recording::SetStimulusDescription(QString description)
 
 void Recording::fromVariantMap(const QVariantMap& variantMap)
 {
-    mv::util::variantMapMustContain(variantMap, "data");
+    mv::util::variantMapMustContain(variantMap, "Data");
+    mv::util::variantMapMustContain(variantMap, "StimulusDescription");
 
-    _data.fromVariantMap(variantMap["data"].toMap());
+    _data.fromVariantMap(variantMap["Data"].toMap());
+    _stimulusDescription = variantMap["StimulusDescription"].toString();
 }
 
 QVariantMap Recording::toVariantMap() const
 {
     QVariantMap variantMap;
 
-    variantMap["data"] = _data.toVariantMap();
+    variantMap["Data"] = _data.toVariantMap();
+    variantMap["StimulusDescription"] = _stimulusDescription;
 
     return variantMap;
 }
