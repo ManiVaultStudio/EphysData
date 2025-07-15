@@ -11,7 +11,9 @@ class EPHYSDATA_EXPORT TimeSeries : public mv::util::Serializable
 public:
     void downsample();
     void trim();
+    void trim(int start, int end);
     void computeExtents();
+    std::pair<int, int> findStimulusRange();
 
 public: // Serialization
     void fromVariantMap(const QVariantMap& variantMap) override;

@@ -126,6 +126,27 @@ void TimeSeries::trim()
     ySeries.shrink_to_fit();
 }
 
+const int BUFFER_SIZE = 200;
+void TimeSeries::trim(int start, int end)
+{
+    // Add a bit of a buffer at the beginning and the end
+    if (start - BUFFER_SIZE > 0)
+        start = start - BUFFER_SIZE;
+    else start = 0;
+
+    if (end + BUFFER_SIZE < xSeries.size())
+        end = end + BUFFER_SIZE;
+    else end = xSeries.size() - 1;
+
+    // Resize both series
+    xSeries = std::vector<float>(xSeries.begin() + start, xSeries.begin() + end);
+    ySeries = std::vector<float>(ySeries.begin() + start, ySeries.begin() + end);
+
+    // Release excess memory usage
+    xSeries.shrink_to_fit();
+    ySeries.shrink_to_fit();
+}
+
 void TimeSeries::computeExtents()
 {
     xMin = std::numeric_limits<float>::max();
@@ -143,6 +164,61 @@ void TimeSeries::computeExtents()
         if (ySeries[i] < yMin) yMin = ySeries[i];
         if (ySeries[i] > yMax) yMax = ySeries[i];
     }
+}
+
+std::pair<int, int> TimeSeries::findStimulusRange()
+{
+    struct Mark { int i; bool isZero; };
+    std::vector<Mark> marks;
+
+    bool isZero = true;
+    //marks.emplace_back(-1, true);
+
+    // Mark all transition points
+    for (int i = 0; i < ySeries.size(); i++)
+    {
+        if (isZero && ySeries[i] != 0)
+        {
+            isZero = false;
+            marks.emplace_back(Mark{ i, false });
+        }
+        if (!isZero && ySeries[i] == 0)
+        {
+            if (ySeries.size() > i + 2 && ySeries[i + 1] == 0) // Make sure we are not just passing a 0 on the way
+            {
+                isZero = true;
+                marks.emplace_back(Mark{ i, true });
+            }
+        }
+    }
+
+    if (marks.size() < 2)
+        return std::pair<int, int>(-1, -1);
+
+    // Find longest stimulus
+    int begin = 0;
+    int end = 0;
+
+    int longestStreak = 0;
+    int endMark = 0;
+
+    for (int i = 0; i < marks.size(); i++)
+    {
+        Mark& mark = marks[i];
+        if (!mark.isZero)
+            begin = mark.i;
+        if (mark.isZero)
+        {
+            end = mark.i;
+            if (end - begin > longestStreak)
+            {
+                endMark = i;
+                longestStreak = end - begin;
+            }
+        }
+    }
+
+    return std::pair<int, int>(marks[endMark - 1].i, marks[endMark].i);
 }
 
 void TimeSeries::fromVariantMap(const QVariantMap& variantMap)
@@ -168,7 +244,7 @@ void TimeSeries::fromVariantMap(const QVariantMap& variantMap)
     yMin = variantMap["yMin"].toFloat();
     yMax = variantMap["yMax"].toFloat();
 
-    qDebug() << "Extents: " << xMin << xMax << yMin << yMax;
+    //qDebug() << "Extents: " << xMin << xMax << yMin << yMax;
 }
 
 QVariantMap TimeSeries::toVariantMap() const

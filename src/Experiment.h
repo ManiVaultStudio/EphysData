@@ -13,8 +13,8 @@
 class EPHYSDATA_EXPORT Experiment : public mv::util::Serializable
 {
 public:
-    const std::vector<Recording>& getAcquisitions() { return _acquisitions; }
-    const std::vector<Recording>& getStimuli() { return _stimuli; }
+    const std::vector<Recording>& getAcquisitions() const { return _acquisitions; }
+    const std::vector<Recording>& getStimuli() const { return _stimuli; }
 
     void addAcquisition(Recording&& recording);
     void addStimulus(Recording&& recording);
