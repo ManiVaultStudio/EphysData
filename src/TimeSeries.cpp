@@ -254,7 +254,7 @@ QVariantMap TimeSeries::toVariantMap() const
     if (xSeries.size() != ySeries.size())
         throw std::runtime_error("TimeSeries xSeries size doesn't match ySeries size");
 
-    variantMap["NumDataPoints"] = xSeries.size();
+    variantMap["NumDataPoints"] = QVariant::fromValue(xSeries.size());
     variantMap["xSeries"] = mv::util::rawDataToVariantMap((const char*)xSeries.data(), xSeries.size() * sizeof(float));
     variantMap["ySeries"] = mv::util::rawDataToVariantMap((const char*)ySeries.data(), ySeries.size() * sizeof(float));
     variantMap["xMin"] = xMin;
