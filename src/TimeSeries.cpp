@@ -2,6 +2,8 @@
 
 #include "util/Serialization.h"
 
+#include <cmath>
+
 void lttb(TimeSeries& input, size_t threshold) {
     size_t dataLength = input.xSeries.size();
     if (threshold >= dataLength || threshold == 0) {
@@ -90,8 +92,8 @@ void TimeSeries::downsample()
 
     for (int i = 0; i < xSeries.size(); i++)
     {
-        if (isnan(xSeries[i])) xSeries[i] = 0;
-        if (isnan(ySeries[i])) ySeries[i] = 0;
+        if (std::isnan(xSeries[i])) xSeries[i] = 0;
+        if (std::isnan(ySeries[i])) ySeries[i] = 0;
     }
 }
 
