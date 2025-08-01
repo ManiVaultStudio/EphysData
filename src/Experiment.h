@@ -19,6 +19,8 @@ public:
     void addAcquisition(Recording&& recording);
     void addStimulus(Recording&& recording);
 
+    std::vector<uint32_t> getStimsetSweeps(const QString& stimset) const;
+
 public: // Serialization
     void fromVariantMap(const QVariantMap& variantMap) override;
     QVariantMap toVariantMap() const override;

@@ -10,6 +10,19 @@ void Experiment::addStimulus(Recording&& recording)
     _stimuli.push_back(std::move(recording));
 }
 
+std::vector<uint32_t> Experiment::getStimsetSweeps(const QString& stimset) const
+{
+    std::vector<uint32_t> stimSetIndices;
+    for (int i = 0; i < _stimuli.size(); i++)
+    {
+        if (_stimuli[i].GetStimulusDescription() == stimset)
+        {
+            stimSetIndices.push_back(i);
+        }
+    }
+    return stimSetIndices;
+}
+
 void Experiment::fromVariantMap(const QVariantMap& variantMap)
 {
     mv::util::variantMapMustContain(variantMap, "acquisitions");
