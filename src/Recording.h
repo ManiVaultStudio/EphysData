@@ -22,6 +22,9 @@ public:
     QString GetAttribute(QString attributeName) const;
     const QHash<QString, QString>& GetAttributes() const;
 
+    int GetSweepNumber() const;
+    void SetSweepNumber(int sweepNumber);
+
     QString GetStimulusDescription() const;
     void SetStimulusDescription(QString description);
 
@@ -37,5 +40,6 @@ private:
 
     QHash<QString, QString>     _attributes;
 
+    int                         _sweepNumber;
     QString                     _stimulusDescription;
 };
