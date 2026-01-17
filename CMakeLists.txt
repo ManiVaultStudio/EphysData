@@ -43,6 +43,8 @@ set(PLUGIN_SOURCES
     src/Recording.cpp
     src/TimeSeries.h
     src/TimeSeries.cpp
+    src/ActionPotential.h
+    src/ActionPotential.cpp
 )
 
 set(PLUGIN_HEADERS
@@ -50,6 +52,7 @@ set(PLUGIN_HEADERS
     src/Experiment.h
     src/Recording.h
     src/TimeSeries.h
+    src/ActionPotential.h
 )
 
 set(QRESOURCES

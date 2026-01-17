@@ -10,6 +10,11 @@ void Experiment::addStimulus(Recording&& recording)
     _stimuli.push_back(std::move(recording));
 }
 
+void Experiment::setActionPotential(ActionPotential* actionPotential)
+{
+    _actionPotential = actionPotential;
+}
+
 std::vector<uint32_t> Experiment::getStimsetSweeps(const QString& stimset) const
 {
     std::vector<uint32_t> stimSetIndices;
@@ -39,6 +44,12 @@ void Experiment::fromVariantMap(const QVariantMap& variantMap)
 
     for (int i = 0; i < _stimuli.size(); i++)
         _stimuli[i].fromVariantMap(stimulusList[i].toMap());
+
+    if (variantMap.contains("actionPotential"))
+    {
+        _actionPotential = new ActionPotential();
+        _actionPotential->fromVariantMap(variantMap["actionPotential"].toMap());
+    }
 }
 
 QVariantMap Experiment::toVariantMap() const
@@ -56,6 +67,11 @@ QVariantMap Experiment::toVariantMap() const
 
     variantMap["acquisitions"] = acquisitionList;
     variantMap["stimuli"] = stimulusList;
+
+    if (_actionPotential)
+    {
+        variantMap["actionPotential"] = _actionPotential->toVariantMap();
+    }
 
     return variantMap;
 }
