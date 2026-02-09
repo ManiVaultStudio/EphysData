@@ -56,6 +56,32 @@ void Recording::fromVariantMap(const QVariantMap& variantMap)
     }
 }
 
+void Stimulus::CalculateStimulusAmplitude()
+{
+    float yMin = std::numeric_limits<float>::max();
+    float yMax = -std::numeric_limits<float>::max();
+    const std::vector<float>& ySeries = _recording.GetData().ySeries;
+    for (int i = 0; i < ySeries.size(); i++)
+    {
+        if (ySeries[i] < yMin) yMin = ySeries[i];
+        if (ySeries[i] > yMax) yMax = ySeries[i];
+    }
+    _stimulusAmplitude = abs(yMin) > abs(yMax) ? yMin : yMax;
+}
+
+void Stimulus::DetectStimulusType()
+{
+    _stimulusType = StimulusType::Unknown;
+    if (_stimulusDescription.contains("thresh", Qt::CaseInsensitive) || _stimulusDescription.contains("LS") || _stimulusDescription.contains("Rheo", Qt::CaseInsensitive))
+        _stimulusType = StimulusType::LongSquare;
+    if (_stimulusDescription.contains("SS"))
+        _stimulusType = StimulusType::ShortSquare;
+    if (_stimulusDescription.contains("ramp", Qt::CaseInsensitive))
+        _stimulusType = StimulusType::Ramp;
+    if (_stimulusDescription.contains("chirp", Qt::CaseInsensitive))
+        _stimulusType == StimulusType::Chirp;
+}
+
 QVariantMap Recording::toVariantMap() const
 {
     QVariantMap variantMap;

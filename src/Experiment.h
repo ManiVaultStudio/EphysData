@@ -23,6 +23,7 @@ public:
     void setActionPotential(ActionPotential* actionPotential);
 
     std::vector<uint32_t> getStimsetSweeps(const QString& stimset) const;
+    std::vector<uint32_t> GetStimTypeSweeps(StimulusType stimType) const;
 
 public: // Serialization
     void fromVariantMap(const QVariantMap& variantMap) override;

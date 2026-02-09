@@ -33,6 +33,37 @@ private:
     TimeSeries                  _data;
 
     QHash<QString, QString>     _attributes;
+};
+
+enum class StimulusType
+{
+    LongSquare,
+    ShortSquare,
+    Ramp,
+    Chirp,
+    Unknown
+};
+
+inline StimulusType StimulusTypeFromString(const QString& s)
+{
+    if (s == "Long Square")   return StimulusType::LongSquare;
+    if (s == "Short Square") return StimulusType::ShortSquare;
+    if (s == "Ramp")  return StimulusType::Ramp;
+    if (s == "Chirp")  return StimulusType::Chirp;
+    return StimulusType::Unknown;
+}
+
+inline QString ToString(StimulusType stimulusType)
+{
+    switch (stimulusType)
+    {
+    case StimulusType::LongSquare: return QString("Long Square");
+    case StimulusType::ShortSquare: return QString("Short Square");
+    case StimulusType::Ramp: return QString("Ramp");
+    case StimulusType::Chirp: return QString("Chirp");
+    default: return QString("Unknown");
+    }
+}
 
 class EPHYSDATA_EXPORT Stimulus : public mv::util::Serializable
 {

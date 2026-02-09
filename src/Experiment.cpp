@@ -23,6 +23,12 @@ std::vector<uint32_t> Experiment::getStimsetSweeps(const QString& stimset) const
     return stimSetIndices;
 }
 
+std::vector<uint32_t> Experiment::GetStimTypeSweeps(StimulusType stimType) const
+{
+    std::vector<uint32_t> stimSetIndices;
+    for (int i = 0; i < _sweeps.size(); i++)
+    {
+        if (_sweeps[i].stimulus.GetStimulusType() == stimType)
         {
             stimSetIndices.push_back(i);
         }
