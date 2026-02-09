@@ -22,12 +22,6 @@ public:
     QString GetAttribute(QString attributeName) const;
     const QHash<QString, QString>& GetAttributes() const;
 
-    int GetSweepNumber() const;
-    void SetSweepNumber(int sweepNumber);
-
-    QString GetStimulusDescription() const;
-    void SetStimulusDescription(QString description);
-
 public:
     bool HasAttribute(QString attributeName) const;
 
@@ -40,6 +34,30 @@ private:
 
     QHash<QString, QString>     _attributes;
 
-    int                         _sweepNumber;
-    QString                     _stimulusDescription;
+class EPHYSDATA_EXPORT Stimulus : public mv::util::Serializable
+{
+public:
+    Recording& GetRecording() { return _recording; }
+    const Recording& GetRecording() const { return _recording; }
+
+    QString GetStimulusDescription() const;
+    void SetStimulusDescription(QString description);
+
+    float GetStimulusAmplitude() const { return _stimulusAmplitude; }
+    void CalculateStimulusAmplitude();
+
+    StimulusType GetStimulusType() const { return _stimulusType; }
+    void DetectStimulusType();
+
+public: // Serialization
+    void fromVariantMap(const QVariantMap& variantMap) override;
+    QVariantMap toVariantMap() const override;
+
+private:
+    Recording       _recording;
+
+    QString         _stimulusDescription;
+    float           _stimulusAmplitude;
+
+    StimulusType    _stimulusType;
 };

@@ -2,7 +2,7 @@
 
 #include "EphysData_export.h"
 
-#include "Recording.h"
+#include "Sweep.h"
 #include "ActionPotential.h"
 
 #include <util/Serializable.h>
@@ -14,12 +14,11 @@
 class EPHYSDATA_EXPORT Experiment : public mv::util::Serializable
 {
 public:
-    const std::vector<Recording>& getAcquisitions() const { return _acquisitions; }
-    const std::vector<Recording>& getStimuli() const { return _stimuli; }
+    const std::vector<Sweep>& GetSweeps() const { return _sweeps; }
+
     const ActionPotential* getActionPotential() const { return _actionPotential; }
 
-    void addAcquisition(Recording&& recording);
-    void addStimulus(Recording&& recording);
+    void AddSweep(Sweep&& sweep);
 
     void setActionPotential(ActionPotential* actionPotential);
 
@@ -30,8 +29,7 @@ public: // Serialization
     QVariantMap toVariantMap() const override;
 
 private:
-    std::vector<Recording> _acquisitions;
-    std::vector<Recording> _stimuli;
+    std::vector<Sweep> _sweeps;
 
     ActionPotential* _actionPotential = nullptr;
 };

@@ -39,6 +39,8 @@ set(PLUGIN_SOURCES
     src/EphysData.json
     src/Experiment.h
     src/Experiment.cpp
+    src/Sweep.h
+    src/Sweep.cpp
     src/Recording.h
     src/Recording.cpp
     src/TimeSeries.h
@@ -50,6 +52,7 @@ set(PLUGIN_SOURCES
 set(PLUGIN_HEADERS
     src/EphysData.h
     src/Experiment.h
+    src/Sweep.h
     src/Recording.h
     src/TimeSeries.h
     src/ActionPotential.h
