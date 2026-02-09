@@ -14,6 +14,7 @@ public:
     void trim(int start, int end);
     void computeExtents();
     std::pair<int, int> findStimulusRange();
+    std::pair<int, int> FindStimulusRange();
 
 public: // Serialization
     void fromVariantMap(const QVariantMap& variantMap) override;
