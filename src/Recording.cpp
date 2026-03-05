@@ -73,13 +73,21 @@ void Stimulus::DetectStimulusType()
 {
     _stimulusType = StimulusType::Unknown;
     if (_stimulusDescription.contains("thresh", Qt::CaseInsensitive) || _stimulusDescription.contains("LS") || _stimulusDescription.contains("Rheo", Qt::CaseInsensitive))
-        _stimulusType = StimulusType::LongSquare;
+    {
+        _stimulusType = StimulusType::LongSquare; return;
+    }
     if (_stimulusDescription.contains("SS"))
-        _stimulusType = StimulusType::ShortSquare;
-    if (_stimulusDescription.contains("ramp", Qt::CaseInsensitive))
-        _stimulusType = StimulusType::Ramp;
+    {
+        _stimulusType = StimulusType::ShortSquare; return;
+    }
+    if (_stimulusDescription.contains("ramp", Qt::CaseInsensitive) || _stimulusDescription.contains("rmp", Qt::CaseInsensitive))
+    {
+        _stimulusType = StimulusType::Ramp; return;
+    }
     if (_stimulusDescription.contains("chirp", Qt::CaseInsensitive))
-        _stimulusType == StimulusType::Chirp;
+    {
+        _stimulusType = StimulusType::Chirp; return;
+    }
 }
 
 QVariantMap Recording::toVariantMap() const
