@@ -1,21 +1,34 @@
 #include "Experiment.h"
 
-void Experiment::addAcquisition(Recording&& recording)
+void Experiment::AddSweep(Sweep&& sweep)
 {
-    _acquisitions.push_back(std::move(recording));
+    _sweeps.push_back(std::move(sweep));
 }
 
-void Experiment::addStimulus(Recording&& recording)
+void Experiment::setActionPotential(ActionPotential* actionPotential)
 {
-    _stimuli.push_back(std::move(recording));
+    _actionPotential = actionPotential;
 }
 
 std::vector<uint32_t> Experiment::getStimsetSweeps(const QString& stimset) const
 {
     std::vector<uint32_t> stimSetIndices;
-    for (int i = 0; i < _stimuli.size(); i++)
+    for (int i = 0; i < _sweeps.size(); i++)
     {
-        if (_stimuli[i].GetStimulusDescription() == stimset)
+        if (_sweeps[i].stimulus.GetStimulusDescription() == stimset)
+        {
+            stimSetIndices.push_back(i);
+        }
+    }
+    return stimSetIndices;
+}
+
+std::vector<uint32_t> Experiment::GetStimTypeSweeps(StimulusType stimType) const
+{
+    std::vector<uint32_t> stimSetIndices;
+    for (int i = 0; i < _sweeps.size(); i++)
+    {
+        if (_sweeps[i].stimulus.GetStimulusType() == stimType)
         {
             stimSetIndices.push_back(i);
         }
@@ -25,37 +38,38 @@ std::vector<uint32_t> Experiment::getStimsetSweeps(const QString& stimset) const
 
 void Experiment::fromVariantMap(const QVariantMap& variantMap)
 {
-    mv::util::variantMapMustContain(variantMap, "acquisitions");
-    mv::util::variantMapMustContain(variantMap, "stimuli");
+    mv::util::variantMapMustContain(variantMap, "sweeps");
 
-    QVariantList acquisitionList = variantMap["acquisitions"].toList();
-    QVariantList stimulusList = variantMap["stimuli"].toList();
+    QVariantList sweepList = variantMap["sweeps"].toList();
+
     qDebug() << "Loading experiment..";
-    _acquisitions.resize(acquisitionList.size());
-    _stimuli.resize(stimulusList.size());
+    _sweeps.resize(sweepList.size());
 
-    for (int i = 0; i < _acquisitions.size(); i++)
-        _acquisitions[i].fromVariantMap(acquisitionList[i].toMap());
+    for (int i = 0; i < _sweeps.size(); i++)
+        _sweeps[i].fromVariantMap(sweepList[i].toMap());
 
-    for (int i = 0; i < _stimuli.size(); i++)
-        _stimuli[i].fromVariantMap(stimulusList[i].toMap());
+    if (variantMap.contains("actionPotential"))
+    {
+        _actionPotential = new ActionPotential();
+        _actionPotential->fromVariantMap(variantMap["actionPotential"].toMap());
+    }
 }
 
 QVariantMap Experiment::toVariantMap() const
 {
     QVariantMap variantMap;
 
-    QVariantList acquisitionList;
-    QVariantList stimulusList;
+    QVariantList sweepList;
 
-    for (auto& recording : _acquisitions)
-        acquisitionList.append(recording.toVariantMap());
+    for (auto& sweep : _sweeps)
+        sweepList.append(sweep.toVariantMap());
 
-    for (auto& recording : _stimuli)
-        stimulusList.append(recording.toVariantMap());
+    variantMap["sweeps"] = sweepList;
 
-    variantMap["acquisitions"] = acquisitionList;
-    variantMap["stimuli"] = stimulusList;
+    if (_actionPotential)
+    {
+        variantMap["actionPotential"] = _actionPotential->toVariantMap();
+    }
 
     return variantMap;
 }

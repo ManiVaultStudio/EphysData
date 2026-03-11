@@ -223,6 +223,29 @@ std::pair<int, int> TimeSeries::findStimulusRange()
     return std::pair<int, int>(marks[endMark - 1].i, marks[endMark].i);
 }
 
+std::pair<int, int> TimeSeries::FindStimulusRange()
+{
+    int firstNonZero = -1;
+    int lastNonZero = -1;
+    for (int i = 0; i < ySeries.size(); i++)
+    {
+        if (firstNonZero == -1 && abs(ySeries[i]) > 0.001f)
+        {
+            firstNonZero = i;
+            break;
+        }
+    }
+    for (int i = ySeries.size()-1; i >= 0; i--)
+    {
+        if (lastNonZero == -1 && abs(ySeries[i]) > 0.001f)
+        {
+            lastNonZero = i;
+            break;
+        }
+    }
+    return std::pair<int, int>(firstNonZero, lastNonZero);
+}
+
 void TimeSeries::fromVariantMap(const QVariantMap& variantMap)
 {
     mv::util::variantMapMustContain(variantMap, "NumDataPoints");
