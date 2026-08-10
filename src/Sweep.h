@@ -3,6 +3,7 @@
 #include "EphysData_export.h"
 
 #include "Recording.h"
+#include "SweepProperties.h"
 
 class EPHYSDATA_EXPORT Sweep : public mv::util::Serializable
 {
@@ -10,6 +11,9 @@ public:
     int GetSweepNumber() const;
     void SetSweepNumber(int sweepNumber);
 
+    const SweepProperties GetSweepProperties() const { return _properties; }
+
+    void AnalyzeSweep();
 public: // Serialization
     void fromVariantMap(const QVariantMap& variantMap) override;
     QVariantMap toVariantMap() const override;
@@ -18,5 +22,7 @@ public:
     Stimulus stimulus;
     Recording acquisition;
 
+private:
     int _sweepNumber;
+    SweepProperties _properties;
 };

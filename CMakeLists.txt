@@ -47,6 +47,8 @@ set(PLUGIN_SOURCES
     src/TimeSeries.cpp
     src/ActionPotential.h
     src/ActionPotential.cpp
+    src/SweepProperties.h
+    src/SweepProperties.cpp
 )
 
 set(PLUGIN_HEADERS
@@ -56,6 +58,7 @@ set(PLUGIN_HEADERS
     src/Recording.h
     src/TimeSeries.h
     src/ActionPotential.h
+    src/SweepProperties.h
 )
 
 set(QRESOURCES
