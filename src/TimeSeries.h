@@ -9,11 +9,11 @@
 class EPHYSDATA_EXPORT TimeSeries : public mv::util::Serializable
 {
 public:
-    void downsample();
-    void trim();
-    void trim(int start, int end);
-    void computeExtents();
-    std::pair<int, int> findStimulusRange();
+    void Downsample();
+    void Trim();
+    void Trim(int start, int end);
+    void ComputeExtents();
+    //std::pair<int, int> findStimulusRange();
     std::pair<int, int> FindStimulusRange();
 
 public: // Serialization
