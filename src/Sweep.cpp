@@ -1,5 +1,7 @@
 #include "Sweep.h"
 
+#include "Analysis/SpikeDetection.h"
+
 int Sweep::GetSweepNumber() const
 {
     return _sweepNumber;
@@ -8,6 +10,16 @@ int Sweep::GetSweepNumber() const
 void Sweep::SetSweepNumber(int sweepNumber)
 {
     _sweepNumber = sweepNumber;
+}
+
+void Sweep::AnalyzeSweep()
+{
+    stimulus.GetRecording().GetData().ComputeExtents();
+    stimulus.CalculateStimulusAmplitude();
+    stimulus.DetectStimulusType();
+    acquisition.GetRecording().GetData().ComputeExtents();
+
+    _properties.spikeIndices = DetectSpikesIPFX(acquisition.GetRecording().GetData());
 }
 
 void Sweep::fromVariantMap(const QVariantMap& variantMap)
