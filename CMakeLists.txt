@@ -86,6 +86,7 @@ list(APPEND PLUGIN_HEADERS ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}_export.h)
 # -----------------------------------------------------------------------------
 # Target include directories
 # -----------------------------------------------------------------------------
+target_include_directories(${PROJECT_NAME} PRIVATE "${PROJECT_SOURCE_DIR}/src")
 # Include ManiVault headers, including system data plugins
 target_include_directories(${PROJECT_NAME} PRIVATE "${ManiVault_INCLUDE_DIR}")
 
