@@ -14,13 +14,14 @@ public:
     const SweepProperties GetSweepProperties() const { return _properties; }
 
     void AnalyzeSweep();
+
 public: // Serialization
     void fromVariantMap(const QVariantMap& variantMap) override;
     QVariantMap toVariantMap() const override;
 
 public:
     Stimulus stimulus;
-    Recording acquisition;
+    Acquisition acquisition;
 
 private:
     int _sweepNumber;

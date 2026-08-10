@@ -92,3 +92,17 @@ private:
 
     StimulusType    _stimulusType;
 };
+
+class EPHYSDATA_EXPORT Acquisition : public mv::util::Serializable
+{
+public:
+    Recording& GetRecording() { return _recording; }
+    const Recording& GetRecording() const { return _recording; }
+
+public: // Serialization
+    //void fromVariantMap(const QVariantMap& variantMap) override;
+    //QVariantMap toVariantMap() const override;
+
+private:
+    Recording       _recording;
+};
