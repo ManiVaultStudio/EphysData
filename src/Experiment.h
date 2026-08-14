@@ -18,6 +18,7 @@ public:
     void SetName(std::string name) { _name = name; }
 
     const std::vector<Sweep>& GetSweeps() const { return _sweeps; }
+    std::vector<Sweep>& GetSweeps() { return _sweeps; }
 
     const ActionPotential* getActionPotential() const { return _actionPotential; }
 
