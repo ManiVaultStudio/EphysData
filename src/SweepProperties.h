@@ -9,6 +9,8 @@
 class SweepProperties : public mv::util::Serializable
 {
 public:
+    int GetSpikeCount() const { return spikeIndices.size(); }
+
     std::vector<int> spikeIndices;
 
 public: // Serialization
