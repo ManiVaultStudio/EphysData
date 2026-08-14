@@ -14,6 +14,9 @@
 class EPHYSDATA_EXPORT Experiment : public mv::util::Serializable
 {
 public:
+    std::string GetName() { return _name; }
+    void SetName(std::string name) { _name = name; }
+
     const std::vector<Sweep>& GetSweeps() const { return _sweeps; }
 
     const ActionPotential* getActionPotential() const { return _actionPotential; }
@@ -30,6 +33,8 @@ public: // Serialization
     QVariantMap toVariantMap() const override;
 
 private:
+    std::string _name;
+
     std::vector<Sweep> _sweeps;
 
     ActionPotential* _actionPotential = nullptr;
