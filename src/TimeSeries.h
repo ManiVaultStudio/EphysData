@@ -12,6 +12,7 @@ public:
     void Downsample();
     void Trim();
     void Trim(int start, int end);
+    void Trim(int start, int end, float paddingSeconds);
     void ComputeExtents();
     //std::pair<int, int> findStimulusRange();
     std::pair<int, int> FindStimulusRange();

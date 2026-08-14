@@ -146,22 +146,44 @@ void TimeSeries::Trim()
 const int BUFFER_SIZE = 200;
 void TimeSeries::Trim(int start, int end)
 {
-    // Add a bit of a buffer at the beginning and the end
-    if (start - BUFFER_SIZE > 0)
-        start = start - BUFFER_SIZE;
-    else start = 0;
+    if (xSeries.empty() || ySeries.empty())
+        return;
 
-    if (end + BUFFER_SIZE < xSeries.size())
-        end = end + BUFFER_SIZE;
-    else end = xSeries.size() - 1;
+    // Add a bit of a buffer at the beginning and the end
+    start = std::max(0, start - BUFFER_SIZE);
+    end = std::min(static_cast<int>(xSeries.size()) - 1, end + BUFFER_SIZE);
+
+    if (start > end)
+        return;
 
     // Resize both series
-    xSeries = std::vector<float>(xSeries.begin() + start, xSeries.begin() + end);
-    ySeries = std::vector<float>(ySeries.begin() + start, ySeries.begin() + end);
+    xSeries = std::vector<float>(xSeries.begin() + start, xSeries.begin() + end + 1);
+    ySeries = std::vector<float>(ySeries.begin() + start, ySeries.begin() + end + 1);
+}
 
-    // Release excess memory usage
-    xSeries.shrink_to_fit();
-    ySeries.shrink_to_fit();
+void TimeSeries::Trim(int start, int end, float paddingSeconds)
+{
+    // Check data presence
+    if (xSeries.empty() || ySeries.empty())
+        return;
+
+    // Check whether start-end ranges exceed vector bounds
+    if (start < 0 || end < start || end >= static_cast<int>(xSeries.size()))
+        return;
+
+    // Compute start and end times in seconds (including padding)
+    const float paddedStartTime = xSeries[start] - paddingSeconds;
+    const float paddedEndTime = xSeries[end] + paddingSeconds;
+
+    // Find indices corresponding to start time
+    auto startIt = std::lower_bound(xSeries.begin(), xSeries.end(), paddedStartTime);
+    auto endIt = std::upper_bound(xSeries.begin(), xSeries.end(), paddedEndTime);
+
+    const size_t trimStart = std::distance(xSeries.begin(), startIt);
+    const size_t trimEnd = std::distance(xSeries.begin(), endIt);
+
+    xSeries = std::vector<float>(xSeries.begin() + trimStart, xSeries.begin() + trimEnd);
+    ySeries = std::vector<float>(ySeries.begin() + trimStart, ySeries.begin() + trimEnd);
 }
 
 void TimeSeries::ComputeExtents()
