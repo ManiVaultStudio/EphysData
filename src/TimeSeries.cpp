@@ -6,9 +6,8 @@
 
 void lttb(TimeSeries& input, size_t threshold) {
     size_t dataLength = input.xSeries.size();
-    if (threshold >= dataLength || threshold == 0) {
+    if (threshold >= dataLength || threshold < 3)
         return;
-    }
 
     std::vector<float> outX, outY;
     outX.push_back(input.xSeries[0]);
@@ -25,6 +24,9 @@ void lttb(TimeSeries& input, size_t threshold) {
         // Calculate average of next bucket
         double avgX = 0.0, avgY = 0.0;
         size_t avgRange = end - start;
+        if (avgRange == 0)
+            continue;
+
         for (size_t j = start; j < end; ++j) {
             avgX += input.xSeries[j];
             avgY += input.ySeries[j];
@@ -88,7 +90,20 @@ void TimeSeries::Downsample()
     //xSeries.shrink_to_fit();
     //ySeries.shrink_to_fit();
 
-    lttb(*this, xSeries.size() / 100);
+    constexpr size_t DOWNSAMPLE_FACTOR = 100;
+
+    if (xSeries.size() != ySeries.size())
+    {
+        qFatal() << "Timeseries x-Series and y-Series are of different lengths!";
+        return;
+    }
+
+    if (xSeries.size() < DOWNSAMPLE_FACTOR * 3)
+        return;
+
+    const size_t targetSize = xSeries.size() / DOWNSAMPLE_FACTOR;
+
+    lttb(*this, targetSize);
 
     for (int i = 0; i < xSeries.size(); i++)
     {
@@ -110,7 +125,7 @@ void TimeSeries::Trim()
     {
         if (ySeries[i] != ref)
         {
-            newSize = i;
+            newSize = i + 1;
             break;
         }
     }
