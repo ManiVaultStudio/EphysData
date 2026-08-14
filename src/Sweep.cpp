@@ -12,13 +12,8 @@ void Sweep::SetSweepNumber(int sweepNumber)
     _sweepNumber = sweepNumber;
 }
 
-void Sweep::AnalyzeSweep()
+void Sweep::DetectSpikes()
 {
-    stimulus.GetRecording().GetData().ComputeExtents();
-    stimulus.CalculateStimulusAmplitude();
-    stimulus.DetectStimulusType();
-    acquisition.GetRecording().GetData().ComputeExtents();
-
     _properties.spikeIndices = DetectSpikesIPFX(acquisition.GetRecording().GetData());
 }
 
