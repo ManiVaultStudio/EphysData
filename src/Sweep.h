@@ -13,7 +13,7 @@ public:
 
     const SweepProperties GetSweepProperties() const { return _properties; }
 
-    void AnalyzeSweep();
+    void DetectSpikes();
 
 public: // Serialization
     void fromVariantMap(const QVariantMap& variantMap) override;
