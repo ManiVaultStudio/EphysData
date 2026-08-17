@@ -11,6 +11,9 @@ public:
     int GetSweepNumber() const;
     void SetSweepNumber(int sweepNumber);
 
+    bool IsLowestSpikingSweep() const { return _properties._isLowestSpikingSweep; }
+    void MarkLowestSpikingSweep() { _properties._isLowestSpikingSweep = true; }
+
     const SweepProperties GetSweepProperties() const { return _properties; }
 
     void DetectSpikes();
