@@ -14,7 +14,7 @@
 class EPHYSDATA_EXPORT Experiment : public mv::util::Serializable
 {
 public:
-    std::string GetName() { return _name; }
+    std::string GetName() const { return _name; }
     void SetName(std::string name) { _name = name; }
 
     const std::vector<Sweep>& GetSweeps() const { return _sweeps; }
