@@ -13,7 +13,12 @@ public:
 
     std::vector<int> spikeIndices;
 
+private:
+    bool _isLowestSpikingSweep = false;
+
 public: // Serialization
     void fromVariantMap(const QVariantMap& variantMap) override;
     QVariantMap toVariantMap() const override;
+
+    friend class Sweep;
 };
