@@ -100,8 +100,8 @@ public:
     const Recording& GetRecording() const { return _recording; }
 
 public: // Serialization
-    //void fromVariantMap(const QVariantMap& variantMap) override;
-    //QVariantMap toVariantMap() const override;
+    void fromVariantMap(const QVariantMap& variantMap) override;
+    QVariantMap toVariantMap() const override;
 
 private:
     Recording       _recording;

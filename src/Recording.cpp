@@ -40,22 +40,6 @@ void Stimulus::SetStimulusDescription(QString description)
     _stimulusDescription = description;
 }
 
-void Recording::fromVariantMap(const QVariantMap& variantMap)
-{
-    mv::util::variantMapMustContain(variantMap, "Data");
-
-    _data.fromVariantMap(variantMap["Data"].toMap());
-
-    // Load attributes
-    if (variantMap.contains("Attributes"))
-    {
-        QVariantMap attributeMap = variantMap["Attributes"].toMap();
-        for (auto it = attributeMap.constBegin(); it != attributeMap.constEnd(); ++it) {
-            _attributes.insert(it.key(), it.value().toString());
-        }
-    }
-}
-
 void Stimulus::CalculateStimulusAmplitude()
 {
     float yMin = std::numeric_limits<float>::max();
@@ -87,6 +71,22 @@ void Stimulus::DetectStimulusType()
     if (_stimulusDescription.contains("chirp", Qt::CaseInsensitive))
     {
         _stimulusType = StimulusType::Chirp; return;
+    }
+}
+
+void Recording::fromVariantMap(const QVariantMap& variantMap)
+{
+    mv::util::variantMapMustContain(variantMap, "Data");
+
+    _data.fromVariantMap(variantMap["Data"].toMap());
+
+    // Load attributes
+    if (variantMap.contains("Attributes"))
+    {
+        QVariantMap attributeMap = variantMap["Attributes"].toMap();
+        for (auto it = attributeMap.constBegin(); it != attributeMap.constEnd(); ++it) {
+            _attributes.insert(it.key(), it.value().toString());
+        }
     }
 }
 
@@ -129,6 +129,22 @@ QVariantMap Stimulus::toVariantMap() const
     variantMap["StimulusType"] = static_cast<int>(_stimulusType);
     variantMap["StimulusDescription"] = _stimulusDescription;
     variantMap["StimulusAmplitude"] = _stimulusAmplitude;
+
+    return variantMap;
+}
+
+void Acquisition::fromVariantMap(const QVariantMap& variantMap)
+{
+    mv::util::variantMapMustContain(variantMap, "Recording");
+
+    _recording.fromVariantMap(variantMap["Recording"].toMap());
+}
+
+QVariantMap Acquisition::toVariantMap() const
+{
+    QVariantMap variantMap;
+
+    variantMap["Recording"] = _recording.toVariantMap();
 
     return variantMap;
 }
