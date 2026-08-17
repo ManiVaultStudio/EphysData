@@ -38,8 +38,10 @@ std::vector<uint32_t> Experiment::GetStimTypeSweeps(StimulusType stimType) const
 
 void Experiment::fromVariantMap(const QVariantMap& variantMap)
 {
+    mv::util::variantMapMustContain(variantMap, "Name");
     mv::util::variantMapMustContain(variantMap, "sweeps");
 
+    _name = variantMap["Name"].toString().toStdString();
     QVariantList sweepList = variantMap["sweeps"].toList();
 
     qDebug() << "Loading experiment..";
@@ -58,6 +60,8 @@ void Experiment::fromVariantMap(const QVariantMap& variantMap)
 QVariantMap Experiment::toVariantMap() const
 {
     QVariantMap variantMap;
+
+    variantMap["Name"] = QString::fromStdString(_name);
 
     QVariantList sweepList;
 
