@@ -1,5 +1,7 @@
 #include "ActionPotential.h"
 
+#include <util/Serialization.h>
+
 ActionPotential::ActionPotential()
 {
 

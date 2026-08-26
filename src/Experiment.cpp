@@ -1,5 +1,9 @@
 #include "Experiment.h"
 
+#include "MemoryPool.h"
+
+#include <util/Serialization.h>
+
 void Experiment::AddSweep(Sweep&& sweep)
 {
     _sweeps.push_back(std::move(sweep));
@@ -40,6 +44,12 @@ void Experiment::fromVariantMap(const QVariantMap& variantMap)
 {
     mv::util::variantMapMustContain(variantMap, "Name");
     mv::util::variantMapMustContain(variantMap, "sweeps");
+    mv::util::variantMapMustContain(variantMap, "TimeSeriesMemoryPool");
+    mv::util::variantMapMustContain(variantMap, "TimeSeriesMemoryPoolSize");
+
+    size_t memoryPoolSize = variantMap["TimeSeriesMemoryPoolSize"].toInt();
+    MemoryPool::Instance().Resize(memoryPoolSize);
+    mv::util::populateBytesFromBlobMap(variantMap["TimeSeriesMemoryPool"].toMap(), (char*)MemoryPool::Instance().GetData().data(), memoryPoolSize * sizeof(float));
 
     _name = variantMap["Name"].toString().toStdString();
     QVariantList sweepList = variantMap["sweeps"].toList();
@@ -55,6 +65,8 @@ void Experiment::fromVariantMap(const QVariantMap& variantMap)
         _actionPotential = new ActionPotential();
         _actionPotential->fromVariantMap(variantMap["actionPotential"].toMap());
     }
+
+    MemoryPool::Instance().Clear();
 }
 
 QVariantMap Experiment::toVariantMap() const
@@ -74,6 +86,10 @@ QVariantMap Experiment::toVariantMap() const
     {
         variantMap["actionPotential"] = _actionPotential->toVariantMap();
     }
+
+    variantMap["TimeSeriesMemoryPool"] = mv::util::bytesToBlobVariantMap((const char*)MemoryPool::Instance().GetData().data(), MemoryPool::Instance().Size() * sizeof(float));
+    variantMap["TimeSeriesMemoryPoolSize"] = (int) MemoryPool::Instance().Size();
+    MemoryPool::Instance().Clear();
 
     return variantMap;
 }

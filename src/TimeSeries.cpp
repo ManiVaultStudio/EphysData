@@ -1,6 +1,8 @@
 #include "TimeSeries.h"
 
-#include "util/Serialization.h"
+#include "MemoryPool.h"
+
+#include <util/Serialization.h>
 
 #include <cmath>
 
@@ -286,8 +288,6 @@ std::pair<int, int> TimeSeries::FindStimulusRange()
 void TimeSeries::fromVariantMap(const QVariantMap& variantMap)
 {
     mv::util::variantMapMustContain(variantMap, "NumDataPoints");
-    mv::util::variantMapMustContain(variantMap, "xSeries");
-    mv::util::variantMapMustContain(variantMap, "ySeries");
     mv::util::variantMapMustContain(variantMap, "xMin");
     mv::util::variantMapMustContain(variantMap, "xMax");
     mv::util::variantMapMustContain(variantMap, "yMin");
@@ -298,8 +298,10 @@ void TimeSeries::fromVariantMap(const QVariantMap& variantMap)
     xSeries.resize(numDataPoints);
     ySeries.resize(numDataPoints);
 
-    mv::util::populateDataBufferFromVariantMap(variantMap["xSeries"].toMap(), (char*) xSeries.data());
-    mv::util::populateDataBufferFromVariantMap(variantMap["ySeries"].toMap(), (char*) ySeries.data());
+    MemoryPool::Instance().GetVectorFromBuffer(xSeries);
+    MemoryPool::Instance().GetVectorFromBuffer(ySeries);
+    //mv::util::populateBytesFromBlobMap(variantMap["xSeries"].toMap(), (char*) xSeries.data(), xSeries.size() * sizeof(float));
+    //mv::util::populateBytesFromBlobMap(variantMap["ySeries"].toMap(), (char*) ySeries.data(), ySeries.size() * sizeof(float));
 
     xMin = variantMap["xMin"].toFloat();
     xMax = variantMap["xMax"].toFloat();
@@ -317,8 +319,10 @@ QVariantMap TimeSeries::toVariantMap() const
         throw std::runtime_error("TimeSeries xSeries size doesn't match ySeries size");
 
     variantMap["NumDataPoints"] = QVariant::fromValue(xSeries.size());
-    variantMap["xSeries"] = mv::util::rawDataToVariantMap((const char*)xSeries.data(), xSeries.size() * sizeof(float));
-    variantMap["ySeries"] = mv::util::rawDataToVariantMap((const char*)ySeries.data(), ySeries.size() * sizeof(float));
+    MemoryPool::Instance().AddVectorToBuffer(xSeries);
+    MemoryPool::Instance().AddVectorToBuffer(ySeries);
+    //variantMap["xSeries"] = mv::util::bytesToBlobVariantMap((const char*)xSeries.data(), xSeries.size() * sizeof(float));
+    //variantMap["ySeries"] = mv::util::bytesToBlobVariantMap((const char*)ySeries.data(), ySeries.size() * sizeof(float));
     variantMap["xMin"] = xMin;
     variantMap["xMax"] = xMax;
     variantMap["yMin"] = yMin;

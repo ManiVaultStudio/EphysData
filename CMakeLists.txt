@@ -49,6 +49,8 @@ set(PLUGIN_SOURCES
     src/ActionPotential.cpp
     src/SweepProperties.h
     src/SweepProperties.cpp
+    src/MemoryPool.h
+    src/MemoryPool.cpp
     src/Analysis/SpikeDetection.h
     src/Analysis/SpikeDetection.cpp
     src/Analysis/IPFX.h
