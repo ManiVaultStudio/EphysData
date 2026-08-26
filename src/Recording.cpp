@@ -1,5 +1,7 @@
 #include "Recording.h"
 
+#include <util/Serialization.h>
+
 TimeSeries& Recording::GetData()
 {
     return _data;

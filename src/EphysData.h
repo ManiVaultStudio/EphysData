@@ -41,6 +41,28 @@ public:
 public: // Serialization
 
     /**
+     * Create a workflow that restores this object's state from a variant map.
+     *
+     * See Serializable::fromVariantMapWorkflow() for the full contract,
+     * execution semantics, and implementation requirements.
+     *
+     * @param variantMap Serialized object state.
+     * @return Workflow plan that restores the object state when executed.
+     */
+    //mv::workflow::UniqueWorkflowPlan fromVariantMapWorkflow(QVariantMap variantMap) override;
+
+    ///**
+    // * Create a workflow that serializes this object's state to a variant map.
+    // *
+    // * See Serializable::toVariantMapWorkflow() for the full contract,
+    // * execution semantics, and implementation requirements.
+    // *
+    // * @return Workflow plan that serializes the object state when executed.
+    // */
+    //mv::workflow::UniqueWorkflowPlan toVariantMapWorkflow() const override;
+
+
+    /**
      * Load data plugin from variant
      * @param Variant representation of the widget action
      */

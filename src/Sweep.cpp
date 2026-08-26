@@ -1,5 +1,7 @@
 #include "Sweep.h"
 
+#include <util/Serialization.h>
+
 #include "Analysis/SpikeDetection.h"
 
 int Sweep::GetSweepNumber() const

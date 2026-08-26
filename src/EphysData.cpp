@@ -3,6 +3,7 @@
 
 #include <util/Icon.h>
 
+#include <workflow/WorkflowContextVariantMap.h>
 #include <util/Serialization.h>
 
 #include <QtCore>
@@ -14,6 +15,7 @@ Q_PLUGIN_METADATA(IID "studio.manivault.EphysData")
 
 using namespace mv;
 using namespace mv::util;
+using namespace mv::workflow;
 
 EphysData::~EphysData(void)
 {
@@ -51,6 +53,57 @@ void EphysData::addExperiment(Experiment&& experiment)
 {
     _experiments.push_back(std::move(experiment));
 }
+
+//UniqueWorkflowPlan EphysData::fromVariantMapWorkflow(QVariantMap variantMap)
+//{
+//    auto plan = std::make_unique<WorkflowPlan>(__FUNCTION__);
+//
+//    const auto experimentList = variantMap["Experiments"].toList();
+//
+//    WorkflowPlan::Jobs experimentJobs;
+//
+//    experimentJobs.reserve(experimentList.size());
+//
+//    for (const auto& experiment : experimentList) {
+//        const auto experimentIndex = experimentList.indexOf(experiment);
+//        experimentJobs.emplace_back(WorkflowPlan::Job(QString("Load experiment %1").arg(QString::number(experimentIndex)), [this, experiment, experimentIndex](const WorkflowPlan::Job&, const SharedWorkflowExecutionContext&) {
+//            _experiments[experimentIndex].fromVariantMap(experiment.toMap());
+//        }, WorkflowPlan::JobThreadAffinity::CurrentWorkerThread, WorkflowPlan::JobProgressMode::Atomic));
+//    }
+//
+//    plan->addSequentialStage("Load experiments", experimentJobs);
+//
+//    return plan;
+//}
+
+//UniqueWorkflowPlan EphysData::toVariantMapWorkflow() const
+//{
+//    auto plan = std::make_unique<WorkflowPlan>(__FUNCTION__);
+//
+//    const auto baseSaveStage = plan->addNestedWorkflowStage("Save raw data base", [this](const WorkflowPlan::Job&, const SharedWorkflowExecutionContext&) -> UniqueWorkflowPlan {
+//        return this->Plugin::toVariantMapWorkflow();
+//        });
+//
+//    plan->addSequentialStage("Preflight", [this](const WorkflowPlan::Job&, const SharedWorkflowExecutionContext& executionContext) {
+//        if (getClusters().size() > 500000) {
+//            executionContext->warning(QString("%1 clusters dataset contains approximately %2 clusters; very large numbers of clusters can take considerable time to save and load. Consider reducing the number of clusters if project serialization performance becomes a concern.").arg(getGuiName()).arg(getIntegerCountHumanReadable(getClusters().size())));
+//        }
+//        });
+//
+//    const auto serializeClustersStage = plan->addNestedWorkflowStage("Serialize clusters", [this](const WorkflowPlan::Job&, const SharedWorkflowExecutionContext&) -> UniqueWorkflowPlan {
+//        return ClustersSerializer::toVariantMapWorkflow(_clusters);
+//        });
+//
+//    plan->addSequentialStage("Save data", [this, baseSaveStage, serializeClustersStage](const WorkflowPlan::Job&, const SharedWorkflowExecutionContext& executionContext) {
+//        auto outputMap = executionContext->takeOutput(baseSaveStage).toMap();
+//
+//        outputMap.insert(executionContext->takeOutput(serializeClustersStage).toMap());
+//
+//        executionContext->setOutput(outputMap);
+//        });
+//
+//    return plan;
+//}
 
 void EphysData::fromVariantMap(const QVariantMap& variantMap)
 {

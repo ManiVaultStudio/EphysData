@@ -1,5 +1,7 @@
 #include "SweepProperties.h"
 
+#include <util/Serialization.h>
+
 void SweepProperties::fromVariantMap(const QVariantMap& variantMap)
 {
     mv::util::variantMapMustContain(variantMap, "SpikeIndices");
