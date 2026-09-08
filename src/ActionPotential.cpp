@@ -16,40 +16,29 @@ ActionPotential::ActionPotential(std::vector<float> timeSeries, std::vector<floa
 
 void ActionPotential::fromVariantMap(const QVariantMap& variantMap)
 {
-    mv::util::variantMapMustContain(variantMap, "timeSeries");
-    mv::util::variantMapMustContain(variantMap, "voltageSeries");
-    mv::util::variantMapMustContain(variantMap, "peakIndex");
+    mv::util::variantMapMustContain(variantMap, "NumDataPoints");
+    mv::util::variantMapMustContain(variantMap, "TimeSeries");
+    mv::util::variantMapMustContain(variantMap, "VoltageSeries");
+    mv::util::variantMapMustContain(variantMap, "PeakIndex");
 
-    QVariantList timeSeriesList = variantMap["timeSeries"].toList();
-    QVariantList voltageSeriesList = variantMap["voltageSeries"].toList();
-    _peakIndex = variantMap["peakIndex"].toInt();
-    qDebug() << "Loading action potential..";
-    _timeSeries.resize(timeSeriesList.size());
-    _voltageSeries.resize(voltageSeriesList.size());
+    int numDataPoints = variantMap["NumDataPoints"].toInt();
+    _peakIndex = variantMap["PeakIndex"].toInt();
 
-    for (int i = 0; i < _timeSeries.size(); i++)
-        _timeSeries[i] = timeSeriesList[i].toFloat();
+    _timeSeries.resize(numDataPoints);
+    _voltageSeries.resize(numDataPoints);
 
-    for (int i = 0; i < _voltageSeries.size(); i++)
-        _voltageSeries[i] = voltageSeriesList[i].toFloat();
+    mv::util::populateBytesFromBlobMap(variantMap["TimeSeries"].toMap(), (char*)_timeSeries.data(), _timeSeries.size() * sizeof(float));
+    mv::util::populateBytesFromBlobMap(variantMap["VoltageSeries"].toMap(), (char*)_voltageSeries.data(), _voltageSeries.size() * sizeof(float));
 }
 
 QVariantMap ActionPotential::toVariantMap() const
 {
     QVariantMap variantMap;
 
-    QVariantList timeSeriesList;
-    QVariantList voltageSeriesList;
-
-    for (auto& x : _timeSeries)
-        timeSeriesList.append(x);
-
-    for (auto& y : _voltageSeries)
-        voltageSeriesList.append(y);
-
-    variantMap["timeSeries"] = timeSeriesList;
-    variantMap["voltageSeries"] = voltageSeriesList;
-    variantMap["peakIndex"] = _peakIndex;
+    variantMap["TimeSeries"] = mv::util::bytesToBlobVariantMap((const char*)_timeSeries.data(), _timeSeries.size() * sizeof(float), mv::util::BlobStorageLocation::InlineInProjectJson);
+    variantMap["VoltageSeries"] = mv::util::bytesToBlobVariantMap((const char*)_voltageSeries.data(), _voltageSeries.size() * sizeof(float), mv::util::BlobStorageLocation::InlineInProjectJson);
+    variantMap["NumDataPoints"] = QVariant::fromValue(_timeSeries.size());
+    variantMap["PeakIndex"] = _peakIndex;
 
     return variantMap;
 }
