@@ -43,6 +43,8 @@ set(PLUGIN_SOURCES
     src/Sweep.cpp
     src/Recording.h
     src/Recording.cpp
+    src/Stimulus.h
+    src/Stimulus.cpp
     src/TimeSeries.h
     src/TimeSeries.cpp
     src/ActionPotential.h
@@ -65,6 +67,7 @@ set(PLUGIN_HEADERS
     src/Experiment.h
     src/Sweep.h
     src/Recording.h
+    src/Stimulus.h
     src/TimeSeries.h
     src/ActionPotential.h
     src/SweepProperties.h

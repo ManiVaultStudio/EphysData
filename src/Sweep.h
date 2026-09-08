@@ -3,6 +3,7 @@
 #include "EphysData_export.h"
 
 #include "Recording.h"
+#include "Stimulus.h"
 #include "SweepProperties.h"
 
 class EPHYSDATA_EXPORT Sweep : public mv::util::Serializable

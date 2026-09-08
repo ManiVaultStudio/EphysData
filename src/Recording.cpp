@@ -32,50 +32,6 @@ bool Recording::HasAttribute(QString attributeName) const
     return _attributes.contains(attributeName);
 }
 
-QString Stimulus::GetStimulusDescription() const
-{
-    return _stimulusDescription;
-}
-
-void Stimulus::SetStimulusDescription(QString description)
-{
-    _stimulusDescription = description;
-}
-
-void Stimulus::CalculateStimulusAmplitude()
-{
-    float yMin = std::numeric_limits<float>::max();
-    float yMax = -std::numeric_limits<float>::max();
-    const std::vector<float>& ySeries = _recording.GetData().ySeries;
-    for (int i = 0; i < ySeries.size(); i++)
-    {
-        if (ySeries[i] < yMin) yMin = ySeries[i];
-        if (ySeries[i] > yMax) yMax = ySeries[i];
-    }
-    _stimulusAmplitude = abs(yMin) > abs(yMax) ? yMin : yMax;
-}
-
-void Stimulus::DetectStimulusType()
-{
-    _stimulusType = StimulusType::Unknown;
-    if (_stimulusDescription.contains("thresh", Qt::CaseInsensitive) || _stimulusDescription.contains("LS") || _stimulusDescription.contains("Rheo", Qt::CaseInsensitive))
-    {
-        _stimulusType = StimulusType::LongSquare; return;
-    }
-    if (_stimulusDescription.contains("SS"))
-    {
-        _stimulusType = StimulusType::ShortSquare; return;
-    }
-    if (_stimulusDescription.contains("ramp", Qt::CaseInsensitive) || _stimulusDescription.contains("rmp", Qt::CaseInsensitive))
-    {
-        _stimulusType = StimulusType::Ramp; return;
-    }
-    if (_stimulusDescription.contains("chirp", Qt::CaseInsensitive))
-    {
-        _stimulusType = StimulusType::Chirp; return;
-    }
-}
-
 void Recording::fromVariantMap(const QVariantMap& variantMap)
 {
     mv::util::variantMapMustContain(variantMap, "Data");
@@ -105,32 +61,6 @@ QVariantMap Recording::toVariantMap() const
     }
 
     variantMap["Attributes"] = attributeMap;
-
-    return variantMap;
-}
-
-void Stimulus::fromVariantMap(const QVariantMap& variantMap)
-{
-    mv::util::variantMapMustContain(variantMap, "Recording");
-    mv::util::variantMapMustContain(variantMap, "StimulusDescription");
-    mv::util::variantMapMustContain(variantMap, "StimulusAmplitude");
-
-    _recording.fromVariantMap(variantMap["Recording"].toMap());
-
-    _stimulusType = static_cast<StimulusType>(variantMap["StimulusType"].toInt());
-    _stimulusDescription = variantMap["StimulusDescription"].toString();
-    _stimulusAmplitude = variantMap["StimulusAmplitude"].toFloat();
-}
-
-QVariantMap Stimulus::toVariantMap() const
-{
-    QVariantMap variantMap;
-
-    variantMap["Recording"] = _recording.toVariantMap();
-
-    variantMap["StimulusType"] = static_cast<int>(_stimulusType);
-    variantMap["StimulusDescription"] = _stimulusDescription;
-    variantMap["StimulusAmplitude"] = _stimulusAmplitude;
 
     return variantMap;
 }
