@@ -53,6 +53,7 @@ set(PLUGIN_SOURCES
     src/SweepProperties.cpp
     src/MemoryPool.h
     src/MemoryPool.cpp
+    src/StimulusRepresentation.h
 )
 
 set(ANALYSIS_SOURCES
@@ -60,6 +61,8 @@ set(ANALYSIS_SOURCES
     src/Analysis/SpikeDetection.cpp
     src/Analysis/IPFX.h
     src/Analysis/IPFX.cpp
+    src/Analysis/StimulusExtraction.h
+    src/Analysis/StimulusExtraction.cpp
 )
 
 set(PLUGIN_HEADERS
@@ -71,6 +74,8 @@ set(PLUGIN_HEADERS
     src/TimeSeries.h
     src/ActionPotential.h
     src/SweepProperties.h
+    src/StimulusRepresentation.h
+    src/Analysis/StimulusExtraction.h
 )
 
 set(QRESOURCES
