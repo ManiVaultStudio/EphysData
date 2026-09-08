@@ -29,4 +29,6 @@ public:
     float xMax = 0;
     float yMin = 0;
     float yMax = 0;
+
+    int samplingRate = -1;
 };

@@ -292,14 +292,24 @@ void TimeSeries::fromVariantMap(const QVariantMap& variantMap)
     mv::util::variantMapMustContain(variantMap, "xMax");
     mv::util::variantMapMustContain(variantMap, "yMin");
     mv::util::variantMapMustContain(variantMap, "yMax");
+    mv::util::variantMapMustContain(variantMap, "SamplingRate");
 
     int numDataPoints = variantMap["NumDataPoints"].toInt();
+    samplingRate = variantMap["SamplingRate"].toInt();
 
     xSeries.resize(numDataPoints);
     ySeries.resize(numDataPoints);
 
     MemoryPool::Instance().GetVectorFromBuffer(xSeries);
     MemoryPool::Instance().GetVectorFromBuffer(ySeries);
+
+    //// Populate xSeries from sampling rate
+    //xSeries.resize(ySeries.size());
+    //std::iota(xSeries.begin(), xSeries.end(), 0);
+    //float timeStep = (1.0f / samplingRate);
+    //std::transform(xSeries.begin(), xSeries.end(), xSeries.begin(), [timeStep](auto& c) { return c * timeStep; });
+    //
+
     //mv::util::populateBytesFromBlobMap(variantMap["xSeries"].toMap(), (char*) xSeries.data(), xSeries.size() * sizeof(float));
     //mv::util::populateBytesFromBlobMap(variantMap["ySeries"].toMap(), (char*) ySeries.data(), ySeries.size() * sizeof(float));
 
@@ -321,12 +331,14 @@ QVariantMap TimeSeries::toVariantMap() const
     variantMap["NumDataPoints"] = QVariant::fromValue(xSeries.size());
     MemoryPool::Instance().AddVectorToBuffer(xSeries);
     MemoryPool::Instance().AddVectorToBuffer(ySeries);
-    //variantMap["xSeries"] = mv::util::bytesToBlobVariantMap((const char*)xSeries.data(), xSeries.size() * sizeof(float));
-    //variantMap["ySeries"] = mv::util::bytesToBlobVariantMap((const char*)ySeries.data(), ySeries.size() * sizeof(float));
+    //variantMap["xSeries"] = mv::util::bytesToBlobVariantMap((const char*)xSeries.data(), xSeries.size() * sizeof(float), mv::util::BlobStorageLocation::InlineInProjectJson);
+    //variantMap["ySeries"] = mv::util::bytesToBlobVariantMap((const char*)ySeries.data(), ySeries.size() * sizeof(float), mv::util::BlobStorageLocation::InlineInProjectJson);
     variantMap["xMin"] = xMin;
     variantMap["xMax"] = xMax;
     variantMap["yMin"] = yMin;
     variantMap["yMax"] = yMax;
+
+    variantMap["SamplingRate"] = samplingRate;
 
     return variantMap;
 }
