@@ -51,6 +51,9 @@ set(PLUGIN_SOURCES
     src/SweepProperties.cpp
     src/MemoryPool.h
     src/MemoryPool.cpp
+)
+
+set(ANALYSIS_SOURCES
     src/Analysis/SpikeDetection.h
     src/Analysis/SpikeDetection.cpp
     src/Analysis/IPFX.h
@@ -72,13 +75,14 @@ set(QRESOURCES
 )
 QT6_ADD_RESOURCES(RESOURCE_FILES ${QRESOURCES})
 
-source_group( Plugin FILES ${PLUGIN_SOURCES})
+source_group( Base FILES ${PLUGIN_SOURCES})
+source_group( Analysis FILES ${ANALYSIS_SOURCES})
 
 # -----------------------------------------------------------------------------
 # CMake Target
 # -----------------------------------------------------------------------------
 # Create dynamic library for the plugin
-add_library(${PROJECT_NAME} SHARED ${PLUGIN_SOURCES} ${RESOURCE_FILES})
+add_library(${PROJECT_NAME} SHARED ${PLUGIN_SOURCES} ${ANALYSIS_SOURCES} ${RESOURCE_FILES})
 
 qt_wrap_cpp(PLUGIN_MOC ${PLUGIN_HEADERS} TARGET ${PROJECT_NAME})
 target_sources(${PROJECT_NAME} PRIVATE ${PLUGIN_MOC})
