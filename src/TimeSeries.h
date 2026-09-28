@@ -17,6 +17,9 @@ public:
     //std::pair<int, int> findStimulusRange();
     std::pair<int, int> FindStimulusRange();
 
+    /** Verify that the waveform contains finite, matching X / Y data with increasing timestamps */
+    bool IsValid() const;
+
 public: // Serialization
     void fromVariantMap(const QVariantMap& variantMap) override;
     QVariantMap toVariantMap() const override;

@@ -1,6 +1,7 @@
 #include "StimulusExtraction.h"
 
 #include "Stimulus.h"
+#include "MathUtil.h"
 
 #include <algorithm>
 #include <cmath>
@@ -20,77 +21,9 @@ namespace
         float threshold = 0.0f;
     };
 
-    // Verify that the waveform contains finite, matching X/Y data with increasing timestamps.
-    bool IsValid(const TimeSeries& data)
-    {
-        // If either X or Y in the timeseries is empty, it's invalid
-        if (data.xSeries.empty() || data.ySeries.empty())
-        {
-            qWarning() << "Stimulus data is empty, xSeries: " << data.xSeries.size() << "ySeries: " << data.ySeries.size();
-            return false;
-        }
+    
 
-        // If xSeries and ySeries have differing numbers of values, it's invalid
-        if (data.xSeries.size() != data.ySeries.size())
-        {
-            qWarning() << "Stimulus data differs in size, xSeries: " << data.xSeries.size() << "ySeries: " << data.ySeries.size();
-            return false;
-        }
-
-        // Make sure xSeries has increasing timestamps
-        for (size_t i = 0; i < data.xSeries.size(); ++i)
-        {
-            //if (!std::isfinite(data.xSeries[i]) || !std::isfinite(data.ySeries[i]))
-            //{
-            //    qWarning() << "Stimulus data contains non-finite values, X:" << data.xSeries[i] << "Y:" << data.ySeries[i];
-            //    return false;
-            //}
-
-            if (i > 0 && data.xSeries[i] <= data.xSeries[i - 1])
-            {
-                qWarning() << "Stimulus timeseries is non-monotonically increasing";
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    // Returns the median of a copy of the supplied values.
-    float Median(std::vector<float> values)
-    {
-        if (values.empty())
-            return 0.0f;
-
-        const size_t middle = values.size() / 2;
-        std::nth_element(values.begin(), values.begin() + middle, values.end());
-
-        float median = values[middle];
-
-        if (values.size() % 2 == 0)
-        {
-            const auto lower = std::max_element(values.begin(), values.begin() + middle);
-            median = (*lower + median) * 0.5f;
-        }
-
-        return median;
-    }
-
-    // Returns the arithmetic mean over the half-open range [begin, end).
-    float Mean(const std::vector<float>& values, size_t begin, size_t end)
-    {
-        if (begin >= end || end > values.size())
-            return 0.0f;
-
-        double sum = 0.0;
-
-        for (size_t i = begin; i < end; ++i)
-            sum += values[i];
-
-        return static_cast<float>(sum / static_cast<double>(end - begin));
-    }
-
-    // Estimates baseline from samples at both ends of the sweep using a robust median.
+    // Estimates baseline from samples at the start of the timeseries
     float EstimateBaseline(const TimeSeries& data)
     {
         if (data.ySeries.empty())
@@ -184,6 +117,8 @@ namespace
         size_t activeCount = 0;
         size_t firstActive = data.ySeries.size();
 
+        // Run through the ySeries and check where its value first exceeds threshold, mark that as firstActive
+        // Also keep track of how many samples are above threshold in the whole series
         for (size_t i = 0; i < data.ySeries.size(); ++i)
         {
             if (std::abs(data.ySeries[i] - context.baseline) > context.threshold)
@@ -195,16 +130,7 @@ namespace
             }
         }
 
-        qDebug() << "Active samples:" << activeCount;
-
-        if (activeCount > 0)
-        {
-            qDebug() << "First active:"
-                << firstActive
-                << "x =" << data.xSeries[firstActive]
-                << "y =" << data.ySeries[firstActive];
-        }
-
+        // Create and compute active regions
         std::vector<StimulusExtraction::StimulusRegion> regions;
 
         bool inRegion = false;
@@ -383,7 +309,7 @@ namespace
             plateauBegin = region.begin;
             plateauEnd = region.end + 1;
         }
-
+        
         SquareStimulus result;
         result.baseline = context.baseline;
         result.amplitude = Mean(data.ySeries, plateauBegin, plateauEnd) - context.baseline;
@@ -557,7 +483,7 @@ namespace StimulusExtraction
     // Detects and returns the main stimulus region without attempting to parameterize its shape.
     std::optional<StimulusRegion> FindMainRegion(StimulusType type, const TimeSeries& data)
     {
-        if (!IsValid(data))
+        if (!data.IsValid())
         {
             qWarning("[FindMainRegion] Stimulus data is invalid");
             return std::nullopt;
@@ -572,7 +498,7 @@ namespace StimulusExtraction
     // Detects the main region and dispatches to the extractor appropriate for the stimulus type.
     std::optional<ParameterizedStimulus> TryParameterize(StimulusType type, const TimeSeries& data)
     {
-        if (!IsValid(data))
+        if (!data.IsValid())
             return std::nullopt;
 
         const DetectionContext context = BuildDetectionContext(data);
@@ -597,8 +523,8 @@ namespace StimulusExtraction
             break;
 
         case StimulusType::Chirp:
-            if (auto result = ExtractChirp(data, *region, context))
-                return ParameterizedStimulus{ std::move(*result) };
+            //if (auto result = ExtractChirp(data, *region, context))
+            //    return ParameterizedStimulus{ std::move(*result) };
             break;
 
         case StimulusType::Unknown:

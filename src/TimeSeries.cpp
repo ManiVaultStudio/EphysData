@@ -285,6 +285,41 @@ std::pair<int, int> TimeSeries::FindStimulusRange()
     return std::pair<int, int>(firstNonZero, lastNonZero);
 }
 
+bool TimeSeries::IsValid() const
+{
+    // If either X or Y in the timeseries is empty, it's invalid
+    if (xSeries.empty() || ySeries.empty())
+    {
+        qWarning() << "Stimulus data is empty, xSeries: " << xSeries.size() << "ySeries: " << ySeries.size();
+        return false;
+    }
+
+    // If xSeries and ySeries have differing numbers of values, it's invalid
+    if (xSeries.size() != ySeries.size())
+    {
+        qWarning() << "Stimulus data differs in size, xSeries: " << xSeries.size() << "ySeries: " << ySeries.size();
+        return false;
+    }
+
+    // Make sure xSeries has increasing timestamps
+    for (size_t i = 0; i < xSeries.size(); ++i)
+    {
+        //if (!std::isfinite(data.xSeries[i]) || !std::isfinite(data.ySeries[i]))
+        //{
+        //    qWarning() << "Stimulus data contains non-finite values, X:" << data.xSeries[i] << "Y:" << data.ySeries[i];
+        //    return false;
+        //}
+
+        if (i > 0 && xSeries[i] <= xSeries[i - 1])
+        {
+            qWarning() << "Stimulus timeseries is non-monotonically increasing";
+            return false;
+        }
+    }
+
+    return true;
+}
+
 void TimeSeries::fromVariantMap(const QVariantMap& variantMap)
 {
     mv::util::variantMapMustContain(variantMap, "NumDataPoints");

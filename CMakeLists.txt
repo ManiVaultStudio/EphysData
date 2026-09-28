@@ -54,6 +54,7 @@ set(PLUGIN_SOURCES
     src/MemoryPool.h
     src/MemoryPool.cpp
     src/StimulusRepresentation.h
+    src/MathUtil.h
 )
 
 set(ANALYSIS_SOURCES
